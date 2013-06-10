@@ -1,0 +1,6 @@
+
+So many pieces. 
+
+* Figure out the minimum amount of infrastructure needed to actually do this proof of concept.
+* Build exactly that much infrastructure
+* Meanwhile, get core NLP/ML stuff going. Erg.
