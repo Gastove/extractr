@@ -1,72 +1,56 @@
 
 package com.meanrecipes.extractr.ml
 
-import scala.math.round
+import scala.math._
 
-class Classifier(
-  val classes: List[String] // The Buckets to classify into
-    , val trainingData: Map[String, List[String]] // Training data for the classifier
-    ) {
+class Classifier(val classes: List[String], val trainingData: Map[String, List[String]]) {
 
-  private lazy val trainingSet = train(trainingData)
-
-/*
-Hokay, so. This is a Naive Bayes Classifier. That means:
-
-So:
-
-1. Train
- pass in text and category it belongs to; tokenize/stem text; do word count of text; for category, term, store count; store number of documents in category
-
-Classification is:
- 1. Which every category a document is most likely to belong to.
- 2. For each category, try classifying the text as a member of that category.
- 3. Tokenize/stem document (only actually needs to be done once, pass object to each category)
- 4. The document probability is the product of the weighted average probability of each word blonging to the class in question.
- 5. The word weighted average probability is the product of a weight and a prior plus the product of the total count of a term in all categories and the basic probability of a term in the current class.
- 6. The probability of a term in the current class is 0 if the term has never been encountered, or it's the count of the term in the class / number of training documents for that class.
-
-TODO
-==========
-1. Start building tests -- check.
-2. Figure out how to load stemming library
-3. Flesh out Tokenizer class, make sure I'm not doing a terrible job.
-
-*/
+  private val trainingSet = train(trainingData)
 
   /*
-   tokenize list of docs, returns list of tokens for every document
-   take list of tokens, do word count, return tuple of word -> count
-   final product is Map[class -> List(Tuple(Word, Count))]
+   * Generates training data by tokenizing/stemming text, doing a 
+   * word count, and dividing the word count by the number of training
+   * documents of a particular kind.
+   * 
+   * @trainingData -- Map of training data, Correct Class to list of training docs.
+   * throws IllegalArgumentException if you try to train a Class the Classifier wasn't instantiated with.
+   * 
+   * returns: Map, each key is a tuple of Category, Word, each value is average term appearance in that category.
    */
 
-  private def train(trainingData: Map[String, List[String]]): Map[String, List[Tuple2[String,Int]]] = {
-    // Generates training data by tokenizing/stemming text, doing a word count, and recording the count of documents of that kind.
-    
-    
-    trainingData.mapValues{
-      textList => textList.flatMap{ text => Tokenizer.tokenizeText(text) }
-    }.map{
-      tokenTuple => (tokenTuple._1, tokenTuple._2.groupBy(identity)
-        .map{tup => (tup._1, round(tup._2.size/trainingData(tokenTuple._1).length).toInt)}.toList)
+  private def train(trainingData: Map[String, List[String]]): Map[Tuple2[String, String], Int] = {
+    //Check to make sure incoming traning classes match the Classifier's classes
+    trainingData.keys.foreach{ key =>
+      if (!classes.contains(key)) throw new IllegalArgumentException("Uninstantiated class in training set!")
     }
-
-//    mapValues(round(sum(words) / count(docs), 0)
-  
+    //Generate training data
+    trainingData.mapValues{ textList => textList.flatMap{ text => Tokenizer.tokenizeText(text) } }
+      .map{ tokenTuple =>
+      tokenTuple._2.groupBy(identity)
+        .mapValues{_.size}
+        .map{ wordTup =>
+        ((tokenTuple._1, wordTup._1), 1+ceil(wordTup._2/trainingData(tokenTuple._1).length).toInt)
+      }
+    }.flatten.toMap
   }
   
 
   def classify(classificationText: String): String = {
+    // For a document, calculate the probability that it's a member of every class; return the class that scores highest.
     val tokenizedText = Tokenizer.tokenizeText(classificationText)
     classes.map{ tclass => calcProbabilityForText(tokenizedText, tclass) }.toList.sortWith(_._2 > _._2)(0)._1
   }
 
-  private def calcProbabilityForText(tText: List[String], testClass: String): Tuple2[String, Float] = {
-  /*Calculates the Baysean probability that a text is a member of a given class*/
-    
-    (testClass, 0.0.toFloat)
+  private def calcProbabilityForText(tText: List[String], testClass: String): Tuple2[String, Double] = {
+    //Take the product of the individual word probabiliies to determine document probability
+    (testClass, tText.foldLeft(1.0)( (prob, word) => calcProbabilityForWord(word, testClass) * prob ) )
   }
 
-
-
+  private def calcProbabilityForWord(word: String, testClass: String): Double = {
+    // Get the probability a document belongs to a class given a single word
+    val prior = 0.5
+    val basic_prob = 0.001 + trainingSet.getOrElse((testClass, word), 0) 
+    val totals = classes.map{tClass => trainingSet.getOrElse((tClass, word), 0)}.sum
+    (prior + (totals * basic_prob)) / (1 + totals)
+  }
 }
