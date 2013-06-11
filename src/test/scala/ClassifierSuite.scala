@@ -4,7 +4,7 @@ import com.meanrecipes.extractr.ml.Classifier
 
 class ClassifierSuite extends FunSuite with BeforeAndAfter {
 
-  before {
+//  before {
     val trainingTexts = Map(
       "cat" -> List(
         "Mr. Cat is a catty cat. He is cuddly and nice and feline. Cat eats food.",
@@ -18,13 +18,13 @@ class ClassifierSuite extends FunSuite with BeforeAndAfter {
       )
     )
 
-    val easyCatTest = List("Man, allergies are the worst -- and I'm allergic to the cutest felines." )
-    val easyDogTest = List("Oh wow. That poodle is the most loyal I've ever seen, and what intelligence!")
-    val emptyTest = List("")
+    val easyCatTest = "Man, allergies are the worst -- and I'm allergic to the cutest felines."
+    val easyDogTest = "Oh wow. That poodle is the most loyal I've ever seen, and what intelligence!"
+    val emptyTest = ""
 
     val classifier = new Classifier(List("cat", "dog"), trainingTexts)
 
-  }
+  //}
 
   test ("Easy dog test") {
     val results = classifier.classify(easyDogTest)
