@@ -28,17 +28,24 @@ class ClassifierSuite extends FunSuite with BeforeAndAfter {
 
   test ("Easy dog test") {
     val results = classifier.classify(easyDogTest)
-    assert((results.contains("dog") && results.length == 1) === true)
+    assert(results.contains("dog") === true)
   }
 
   test ("Easy cat test") {
     val results = classifier.classify(easyCatTest)
-    assert((results.contains("cat") && results.length == 1) === true)
+    assert(results.contains("cat") === true)
   }
 
   test ("Empty String test") {
     val results = classifier.classify(emptyTest)
-    assert(results.length === 0)
+    assert(results === "")
+  }
+
+  test ("Untrained category test") {
+    val badTraining = Map("a" -> List("Tra-la"), "b" -> List("Loo-loo"))
+    intercept[IllegalArgumentException] {
+      val wrongClassifier = new Classifier(List("a"), badTraining)
+    }
   }
 
 }

@@ -26,4 +26,9 @@ class TokenizerSuite extends FunSuite {
     assert((tokenized.contains("balloon") && tokenized.contains("nougat")) === true)
  }
 
+  test ("String representations of numerals are left in") {
+    val tokenized = tokenizeText("1 2 3 4 5")
+    assert(tokenized.length === 5)
+  }
+
 }

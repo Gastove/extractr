@@ -12,10 +12,10 @@ class Classifier(val classes: List[String], val trainingData: Map[String, List[S
    * word count, and dividing the word count by the number of training
    * documents of a particular kind.
    * 
-   * @trainingData -- Map of training data, Correct Class to list of training docs.
+   * @param -- Map of training data, Correct Class to list of training docs.
    * throws IllegalArgumentException if you try to train a Class the Classifier wasn't instantiated with.
    * 
-   * returns: Map, each key is a tuple of Category, Word, each value is average term appearance in that category.
+   *@return -- Map, each key is a tuple of Category, Word, each value is average term appearance in that category.
    */
 
   private def train(trainingData: Map[String, List[String]]): Map[Tuple2[String, String], Int] = {
@@ -37,8 +37,11 @@ class Classifier(val classes: List[String], val trainingData: Map[String, List[S
 
   def classify(classificationText: String): String = {
     // For a document, calculate the probability that it's a member of every class; return the class that scores highest.
-    val tokenizedText = Tokenizer.tokenizeText(classificationText)
-    classes.map{ tclass => calcProbabilityForText(tokenizedText, tclass) }.toList.sortWith(_._2 > _._2)(0)._1
+    if (classificationText == "") classificationText
+    else {
+      val tokenizedText = Tokenizer.tokenizeText(classificationText)
+        classes.map{ tclass => calcProbabilityForText(tokenizedText, tclass) }.toList.sortWith(_._2 > _._2)(0)._1
+    }
   }
 
   private def calcProbabilityForText(tText: List[String], testClass: String): Tuple2[String, Double] = {
