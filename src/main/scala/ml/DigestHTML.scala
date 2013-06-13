@@ -8,38 +8,32 @@ import collection.JavaConversions._
 import java.net.URL
 
 /*
-Right. So this thing is going to take incoming HTML and spit out smaller
-Chunks of Stuff. This does *not* do any of the ML tasks required; this
-thing should do everything to take an incoming web page and create
-some kind of object ML can operate on.
-
-Resources:
-http://alvinalexander.com/scala/scala-html-parsing-htmlcleaner-parser
-http://en.wikipedia.org/wiki/Document_Object_Model
-http://myadventuresincoding.wordpress.com/2011/09/29/scala-hello-world-rest-api-with-scalatra-and-simple-build-tool/
-
-
+ * Takes an incoming HTML page, extracts elements from the DOM, returns them as a list of strings
+ * 
+ * ...might need to return a List of Lists. Erghm.
+ * @param filePath = file path to the page in question
+ * @returns List[String]
 */
 
 class DigestHTML(filePath: String) {
-  // Core object. Takes an incoming resource, returns cleaned pieces; should be able to be fed
-  // directly into an ML solution.
 
   val textHeap = loadAndParseFile(filePath)
 
-  def loadAndParseFile(filePath: String): List[String] = {
+  private def loadAndParseFile(filePath: String): List[List[String]] = {
     // This function... well, ideally will work for all Blogspot blogs. Hrm.
-    val cleaner = new HtmlCleaner
 //    val rootNode = cleaner.clean(new URL(urlToClean).openStream)
+    val cleaner = new HtmlCleaner
     val rootNode = cleaner.clean(new File(filePath) )
-    val elements = rootNode.getElementsByName("div", true)
-    elements.map{ elem =>
+    rootNode
+      .getElementsByName("div", true)
+      .map{ elem =>
       elem.getAttributeByName("class") match {
         case "post" | "post-body" => elem.getText.toString.replaceAll("&nbsp;", "")
-        case _ => 
-      }
-    }.toList
-//    .foldLeft(List[String]())( (text, acc) => if (text != "" && !text.isEmpty) text :: acc else acc )
+        case _ => } }
+      .toList
+      .foldLeft(List[List[String]]())( (acc, entry) => entry match {
+        case entry:String => (entry split("\n") toList) :: acc
+        case entry:Any => acc } )
   }
 
 }
