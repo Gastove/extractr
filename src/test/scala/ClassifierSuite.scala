@@ -65,7 +65,12 @@ class ClassifierSuite extends FunSuite {
       "2013-03-24_orangette-we-have-rhythm_recipe.html",
       "2012-10-01_orangette_i-stand-by-my-assessment_recipe.html",
       "2013-02-22_orangette_the-usual_recipe.html",
-      "2013-05-03_orangette-im-feeling-daring_recipe.html"
+      "2013-05-03_orangette-im-feeling-daring_recipe.html",
+      "plain_text_cookbooks/Hada52.txt",
+      "plain_text_cookbooks/Hada86.txt",
+      "plain_text_cookbooks/jubilee.txt",
+      "plain_text_cookbooks/vernon.txt",
+      "plain_text_cookbooks/yellow.txt"
     )
     val trainChaff = List(
       "2012-08-01_orangette_essex_chaff.html",
