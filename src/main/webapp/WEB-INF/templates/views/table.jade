@@ -1,0 +1,8 @@
+
+-@ val tableData: List[List[Any]] = List("You forgot to pass data".split(" ").toList)
+
+table
+	- for (row<- tableData)
+		tr
+			- for (data <- row)
+				td = data

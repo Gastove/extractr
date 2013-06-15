@@ -4,7 +4,7 @@ package com.meanrecipes.extractr.ml
 import scala.io.Source
 import java.io.File
 import org.htmlcleaner.HtmlCleaner
-import collection.JavaConversions._
+//import collection.JavaConversions._
 import java.net.URL
 
 /*

@@ -4,16 +4,27 @@ import org.scalatra._
 import scalate.ScalateSupport
 import com.meanrecipes.extractr.ml._
 import java.io.File
+import scala.language.postfixOps
 
-class ExtractrServlet extends MeanRecipesExtractrStack {
+class ExtractrServlet extends MeanRecipesExtractrStack with ScalateSupport {
 
   get("/") {
-    <html>
-      <body>
-        <h1>Hello, world!</h1>
-        Say <a href="hello-scalate">hello to Scalate</a>.
-      </body>
-    </html>
+    contentType = "text/html"
+    val lolsHeaders = List("Col One", "Col Two", "Col Three", "Col Four", "Col 5")
+    val lols = List(
+      1 to 5 toList,
+      6 to 10 toList,
+      11 to 15 toList
+    )
+
+    jade("/table", "tableHeaders" -> lolsHeaders, "tableData" -> lols)
+
+    // <html>
+    //   <body>
+    //     <h1>Hello, world!</h1>
+    //     Say <a href="hello-scalate">hello to Scalate</a>.
+    //   </body>
+    // </html>
   }
 
   get("/test-ml/") {
