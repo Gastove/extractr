@@ -47,7 +47,7 @@ class ClassifierSuite extends FunSuite {
   }
 
   test ("HTML Recipe Classification") {
-    val path = "/home/gastove/Code/meanrecipes/mean-recipes-extractr/lib/training_data/"
+    val path = "/home/rdonaldson/Code/meanrecipes/extractr/lib/training_data/"
     val rawList = List(
       "2012-08-01_orangette_essex_raw.html",
       "2013-02-22_orangette_the-usual_raw.html",
@@ -65,7 +65,12 @@ class ClassifierSuite extends FunSuite {
       "2013-03-24_orangette-we-have-rhythm_recipe.html",
       "2012-10-01_orangette_i-stand-by-my-assessment_recipe.html",
       "2013-02-22_orangette_the-usual_recipe.html",
-      "2013-05-03_orangette-im-feeling-daring_recipe.html"
+      "2013-05-03_orangette-im-feeling-daring_recipe.html",
+      "plain_text_cookbooks/Hada52.txt",
+      "plain_text_cookbooks/Hada86.txt",
+      "plain_text_cookbooks/jubilee.txt",
+      "plain_text_cookbooks/vernon.txt",
+      "plain_text_cookbooks/yellow.txt"
     )
     val trainChaff = List(
       "2012-08-01_orangette_essex_chaff.html",
@@ -86,13 +91,20 @@ class ClassifierSuite extends FunSuite {
 
     val classifier = new Classifier(List("recipe", "chaff"), trainingData)
 
-    val results = rawList.foldLeft(List[String]())( (acc, testPath) =>
-      new DigestHTML(path + "raw_html/" + testPath).textHeap.foldLeft("")( (acc, toTestText) =>
-        if (classifier.classify(toTestText.toString) == "recipe") toTestText + acc else acc
-      ) :: acc
-    )
+    // val results = rawList.foldLeft(List[String]())( (acc, testPath) =>
+    //   new DigestHTML(path + "raw_html/" + testPath).textHeap.foldLeft("")( (acc, toTestText) =>
+    //     if (classifier.classify(toTestText) == "recipe") toTestText + acc else acc
+    //   ) :: acc
+    // )
 
-    results foreach println
+    val results = rawList.map{ rawHTML =>
+      new DigestHTML(path + "raw_html/" + rawHTML)
+        .textHeap
+        .map(_.foldLeft("")( (acc, toTestText) =>
+          if (classifier.classify(toTestText) == "recipe") toTestText + acc else acc ) )
+    }
+
+    results foreach { result => println("======="); println(result) }
 
     assert(results.length === 6)
   }
