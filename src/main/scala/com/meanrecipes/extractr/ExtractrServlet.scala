@@ -17,17 +17,12 @@ class ExtractrServlet extends MeanRecipesExtractrStack with ScalateSupport {
       11 to 15 toList
     )
 
-    jade("/table", "tableHeaders" -> lolsHeaders, "tableData" -> lols)
+    jade("/table", "title" -> "Oh hai",  "tableHeaders" -> lolsHeaders, "tableData" -> lols)
 
-    // <html>
-    //   <body>
-    //     <h1>Hello, world!</h1>
-    //     Say <a href="hello-scalate">hello to Scalate</a>.
-    //   </body>
-    // </html>
   }
 
   get("/test-ml/") {
+    contentType = "text/html"
     val testRoot = "/WEB-INF/training_data/"
     val rawList = List(
       "2012-08-01_orangette_essex_raw.html",
@@ -68,14 +63,16 @@ class ExtractrServlet extends MeanRecipesExtractrStack with ScalateSupport {
       "chaff" -> trainChaff.map{ url => testRoot + "chaff/" + url }
     )
 
-    val tDataString = trainingData map{tup: Tuple2[String, List[String]] =>
-      tup._2.foldLeft(" ")( (acc, path) =>
-        "<tr> <td>" + tup._1 + "</td><td>" + path +  "</td></tr>" + acc
-      )
-    } toList
+    jade("/mapTable", "tableHeaders" -> List("Classification", "Path"), "mapTableData" -> trainingData, "title" -> "ORLY?")
+
+    // val tDataString = trainingData map{tup: Tuple2[String, List[String]] =>
+    //   tup._2.foldLeft(" ")( (acc, path) =>
+    //     "<tr> <td>" + tup._1 + "</td><td>" + path +  "</td></tr>" + acc
+    //   )
+    // } toList
     
 
-    Ok("<table>" + tDataString(0) + "</table>")
+//    Ok("<table>" + tDataString(0) + "</table>")
 
 
 //    val classifier = new Classifier(List("recipe", "chaff"), trainingData)

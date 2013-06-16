@@ -1,0 +1,17 @@
+
+-@ val tableHeaders: List[String] = List("?", "?")
+-@ val mapTableData: Map[String, List[Any]]
+
+table
+	tr
+		-for (header <- tableHeaders)
+			th(style = "border-bottom:1px solid black; border-collapse:collapse") = header
+	-@ val mtkeys: List[String] = mapTableData.keys.toList
+	- for(mtkey <- mtkeys)
+		tr
+			th(rowspan = {mapTableData(mtkey).length} valign="top" style = "border-bottom:1px solid black; border-collapse:collapse") = mtkey
+			td = {mapTableData(mtkey).head}
+		- for (data <- mapTableData(mtkey).tail)
+			tr
+				td(style = "border-bottom:1px solid black; border-collapse:collapse") = data
+		

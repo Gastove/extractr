@@ -1,8 +1,12 @@
 
 -@ val tableData: List[List[Any]] = List("You forgot to pass data".split(" ").toList)
+-@ val tableHeaders: List[String] = List("?", "?", "?", "?", "?")
 
 table
+	tr
+		- for (header <- tableHeaders)
+			th = header
 	- for (row<- tableData)
-		tr
-			- for (data <- row)
-				td = data
+		tr	
+		- for (data <- row)
+			td = data
