@@ -1,11 +1,15 @@
 
-package com.meanrecipes.extractr.ml
+package com.meanrecipes.extractr.models.ml
 
 import scala.math._
 
-class Classifier(val classes: List[String], val trainingData: Map[String, List[String]]) {
+/*
+ * Naive Baysean Classifier. Decent, but needs expansion to Companion Multivariate Naive Bayes.
+ */
 
-  private val trainingSet = train(trainingData)
+trait TrainingData extends TrainingDataBase {
+
+  type TrainingData = Map[Tuple2[String, String], Int]
 
   /*
    * Generates training data by tokenizing/stemming text, doing a 
@@ -18,7 +22,7 @@ class Classifier(val classes: List[String], val trainingData: Map[String, List[S
    *@return -- Map, each key is a tuple of Category, Word, each value is average term appearance in that category.
    */
 
-  private def train(trainingData: Map[String, List[String]]): Map[Tuple2[String, String], Int] = {
+  private def train(trainingData: Map[String, List[String]]): TrainingData = {
     //Check to make sure incoming traning classes match the Classifier's classes
     trainingData.keys.foreach{ key =>
       if (!classes.contains(key)) throw new IllegalArgumentException("Uninstantiated class in training set!")
@@ -33,7 +37,12 @@ class Classifier(val classes: List[String], val trainingData: Map[String, List[S
       }
     }.flatten.toMap
   }
-  
+
+}
+
+class NaiveBayesClassifier(val classes: List[String], val trainingData: Map[String, List[String]]) extends ClassifierBase with TrainingData {
+
+  private val trainingSet = train(trainingData)
 
   def classify(classificationText: String): String = {
     // For a document, calculate the probability that it's a member of every class; return the class that scores highest.
@@ -57,3 +66,4 @@ class Classifier(val classes: List[String], val trainingData: Map[String, List[S
     (prior + (totals * basic_prob)) / (1 + totals)
   }
 }
+

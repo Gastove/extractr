@@ -1,5 +1,5 @@
 
-package com.meanrecipes.extractr.ml
+package com.meanrecipes.extractr.models.ml
 
 import scala.io.Source
 import java.io.File
