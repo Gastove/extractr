@@ -3,10 +3,20 @@ package com.meanrecipes.extractr
 import org.scalatra._
 import scalate.ScalateSupport
 import com.meanrecipes.extractr.models.ml._
+import com.meanrecipes.extractr.models._
 import java.io.File
 import scala.language.postfixOps
+import org.json4s.{DefaultFormats, Formats} // JSON-related libraries
+import org.scalatra.json._ // JSON handling support from Scalatra
 
-class ExtractrServlet extends MeanRecipesExtractrStack with ScalateSupport {
+class ExtractrServlet extends MeanRecipesExtractrStack with ScalateSupport with JacksonJsonSupport {
+
+  protected implicit val jsonFormats: Formats = DefaultFormats
+
+  get("/test-recipe/") {
+    contentType = formats("json")
+    RecipeData.oneRecipe
+  }
 
   get("/") {
     // Totally just some test nonsense woo.
@@ -19,6 +29,21 @@ class ExtractrServlet extends MeanRecipesExtractrStack with ScalateSupport {
     )
 
     jade("/table", "title" -> "Oh hai",  "tableHeaders" -> lolsHeaders, "tableData" -> lols)
+
+  }
+
+  get("/print-classifications/") {
+    val testRoot = TestFiles.testRoot
+    val trainingData: Map[String, List[String]] = Map(
+      "recipe" -> TestFiles.trainRecipes.map{ url => testRoot + "recipes/" + url },
+      "chaff" -> TestFiles.trainChaff.map{ url => testRoot + "chaff/" + url }
+    )
+    val classifier = new NaiveBayesClassifier(List("recipe", "chaff"), trainingData)
+    // val classifications = TestFiles.rawList(0)
+    //   .map(DigestHTML.processFileToListOfLists(_))
+    //   .flatMap{ lol.map{ item => (item, classifier.classify(item)) } }
+
+//  jade("/mapTable", "tableHeaders" -> List("Path", "Classification"), "tableData" -> classifications)
 
   }
 

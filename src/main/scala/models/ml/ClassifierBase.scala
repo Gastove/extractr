@@ -7,11 +7,11 @@ abstract trait TrainingDataBase {
 
   type TrainingData
 
-  def train(Map[String, List[String]): TrainingData
+  def train(classes: List[String], trainingData: Map[String, List[String]]): TrainingData
 
 }
 
-abstract class ClassifierBase(val classes: List[String]) {
+abstract class ClassifierBase(val classes: List[String], val trainingData: AnyRef) extends TrainingDataBase {
 
   def classify(classificationText: String): String
 

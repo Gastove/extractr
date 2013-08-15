@@ -22,7 +22,7 @@ trait TrainingData extends TrainingDataBase {
    *@return -- Map, each key is a tuple of Category, Word, each value is average term appearance in that category.
    */
 
-  private def train(trainingData: Map[String, List[String]]): TrainingData = {
+  def train(classes: List[String], trainingData: Map[String, List[String]]): TrainingData = {
     //Check to make sure incoming traning classes match the Classifier's classes
     trainingData.keys.foreach{ key =>
       if (!classes.contains(key)) throw new IllegalArgumentException("Uninstantiated class in training set!")
@@ -40,9 +40,11 @@ trait TrainingData extends TrainingDataBase {
 
 }
 
-class NaiveBayesClassifier(val classes: List[String], val trainingData: Map[String, List[String]]) extends ClassifierBase with TrainingData {
+class NaiveBayesClassifier(classes: List[String], trainingData: Map[String, List[String]]) 
+    extends ClassifierBase(classes, trainingData)
+    with TrainingData {
 
-  private val trainingSet = train(trainingData)
+  private val trainingSet = train(classes, trainingData)
 
   def classify(classificationText: String): String = {
     // For a document, calculate the probability that it's a member of every class; return the class that scores highest.
