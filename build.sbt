@@ -13,3 +13,5 @@ libraryDependencies += "org.scalatest" % "scalatest_2.10" % "2.0.M5b" % "test"
 libraryDependencies += "org.scalanlp" %% "breeze-process" % "0.3"
 
 libraryDependencies += "net.sourceforge.htmlcleaner" % "htmlcleaner" % "2.4"
+
+libraryDependencies += "org.mongodb" %% "casbah" % "2.6.2"
