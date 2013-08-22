@@ -2,13 +2,13 @@
 
 //seq(StartScriptPlugin.startScriptForClassesSettings: _*)
 
-scalaVersion := "2.10.2"
+scalaVersion := "2.10.0"
 
 mainClass in Compile := Some("JettyLauncher")
 
 net.virtualvoid.sbt.graph.Plugin.graphSettings
 
-libraryDependencies += "org.scalatest" % "scalatest_2.10" % "2.0.M5b" % "test"
+libraryDependencies += "org.scalatest" %% "scalatest_2" % "2.0.M5b" % "test"
 
 libraryDependencies += "org.scalanlp" %% "breeze-process" % "0.3"
 
