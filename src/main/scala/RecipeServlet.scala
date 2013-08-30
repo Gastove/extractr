@@ -18,6 +18,12 @@ class RecipeServlet(mongoClient: MongoClient) extends MeanRecipesExtractrStack w
     contentType = formats("json")
   }
 
+  post("/test") {
+    val name = params("key")
+    val value = params("value")
+    mongoCollection += MongoDBObject(name -> value)
+  }
+
   post("/add") {
     val recipe  = parsedBody.extract[Recipe]
     mongoCollection += MongoDBObject(recipe.recipe_name -> recipe)

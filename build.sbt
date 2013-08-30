@@ -8,7 +8,7 @@ mainClass in Compile := Some("JettyLauncher")
 
 net.virtualvoid.sbt.graph.Plugin.graphSettings
 
-libraryDependencies += "org.scalatest" %% "scalatest_2" % "2.0.M5b" % "test"
+libraryDependencies += "org.scalatest" %% "scalatest" % "2.0.M5b" % "test"
 
 libraryDependencies += "org.scalanlp" %% "breeze-process" % "0.3"
 
